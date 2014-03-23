@@ -1,35 +1,4 @@
 #################
-## Eclipse
-#################
-
-*.pydevproject
-.project
-.metadata
-bin/
-tmp/
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.classpath
-.settings/
-.loadpath
-
-# External tool builders
-.externalToolBuilders/
-
-# Locally stored "Eclipse launch configurations"
-*.launch
-
-# CDT-specific
-.cproject
-
-# PDT-specific
-.buildpath
-
-
-#################
 ## Visual Studio
 #################
 
@@ -166,21 +135,82 @@ App_Data/*.mdf
 App_Data/*.ldf
 
 #############
-## Windows detritus
+## Unreal 
 #############
 
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
+#
+# NOTE:
+#  Paths that start with / match paths relative to the root (where the .gitignore file is)
+#  Paths that end with / will match a folder and all files under it (but not a regular file with no extension)
+#  Use * for wildcards.  Wildcards stop at path separators
+#  Use ** for a wildcard that spans path separators
+#  Paths in this file should use forward slash characters, not back slashes
+#  Use \ to escape special characters like ! and #
+#  Use ! to negate a previous pattern.  But it doesn't work if the parent sub-folder was masked out already.
+# 
 
-# Folder config file
-Desktop.ini
 
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
+# Ignore project files in the root
+*.sln
+*.suo
+*.opensdf
+*.sdf
+*.xcodeproj
+*.uproject
 
-# Mac crap
-.DS_Store
+# Config is never checked in
+/Config/**
+
+# Derived data cache is never checked in
+/DerivedDataCache/**
+
+# Engine intermediates
+/Intermediate/**
+/Plugins/**/Intermediate/**
+
+# Ignore binary files...
+/Binaries/**
+/Plugins/**/Binaries/**
+
+# ...but Mac Mono binaries will stay, for now.
+!/Binaries
+!/Binaries/ThirdParty
+!/Binaries/ThirdParty/Mono
+!/Binaries/ThirdParty/Mono/Mac
+!/Binaries/ThirdParty/Mono/Mac/bin
+!/Binaries/ThirdParty/Mono/Mac/bin/**
+
+# Intermediate folders created for various C# programs
+/Source/Programs/**/obj/**
+
+# Saved folders for programs should not be checked in
+/Programs/**/Saved/**
+
+# Ignore various other dependencies that are never checked in
+/Content/**
+/Documentation/**
+/Extras/**
+
+# Ignore any saved local files
+/Saved/**
+
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+
+
 
 
 #############
