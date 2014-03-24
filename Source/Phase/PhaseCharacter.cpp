@@ -76,10 +76,20 @@ void APhaseCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Locati
 	}
 }
 
-void APhaseCharacter::MoveFly(float Value)
+void APhaseCharacter::MoveFly(float Rate)
 {
 	// implement flying feature
 	// Intend the PhaseCharacter to float in the direction the player is looking
+	if ((Controller != NULL) && (Rate != 0.0f))
+	{
+		// find out which way is forward
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		// get forward vector
+		const FVector Direction = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
+		AddMovementInput(Direction, Rate); // Using Rate currently, but needs investigation
+	}
 }
 
 void APhaseCharacter::TurnAtRate(float Rate)

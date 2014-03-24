@@ -43,7 +43,7 @@ protected:
 	void MoveRight(float Value);
 
 	/** Called for flying movment input */
-	void MoveFly(float Value);
+	void MoveFly(float Rate);
 
 	/** 
 	 * Called via input to turn at a given rate. 
