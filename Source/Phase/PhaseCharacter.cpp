@@ -76,6 +76,12 @@ void APhaseCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Locati
 	}
 }
 
+void APhaseCharacter::MoveFly(float Value)
+{
+	// implement flying feature
+	// Intend the PhaseCharacter to float in the direction the player is looking
+}
+
 void APhaseCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information

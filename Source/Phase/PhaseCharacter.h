@@ -26,12 +26,24 @@ class APhaseCharacter : public ACharacter
 	float BaseLookUpRate;
 
 protected:
+	//* Actions *//////////////////////////////////////////////////////////////////////
+	//
+	/** To Activate a power*/
+	void OnUsePower();
 
+	/**  To Fire a weapom */
+	void OnFire();
+
+	//* MOVEMENT *//////////////////////////////////////////////////////////////////////
+	//
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
 	/** Called for side to side input */
 	void MoveRight(float Value);
+
+	/** Called for flying movment input */
+	void MoveFly(float Value);
 
 	/** 
 	 * Called via input to turn at a given rate. 
