@@ -50,6 +50,7 @@ void APhaseCharacter::SetupPlayerInputComponent(class UInputComponent* InputComp
 	// Set up gameplay key bindings
 	check(InputComponent);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	//InputComponent->BindAction("Fly", IE_Pressed, this, &ACharacter::ClientCheatFly);
 
 	InputComponent->BindAxis("MoveForward", this, &APhaseCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &APhaseCharacter::MoveRight);
