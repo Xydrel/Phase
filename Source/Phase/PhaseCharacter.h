@@ -25,17 +25,22 @@ class APhaseCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	/**  Base Flight rate, in deg/sec. */
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+	float BaseFlyRate;
+
 protected:
-	//* Actions *//////////////////////////////////////////////////////////////////////
-	//
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// * Actions *
 	/** To Activate a power*/
 	void OnUsePower();
 
 	/**  To Fire a weapom */
 	void OnFire();
 
-	//* MOVEMENT *//////////////////////////////////////////////////////////////////////
-	//
+	////////////////////////////////////////////////////////////////////////////////////
+	// * Movement *
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
@@ -61,6 +66,7 @@ protected:
 	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
 
 protected:
+
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) OVERRIDE;
 	// End of APawn interface
