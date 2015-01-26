@@ -3,6 +3,6 @@
 #ifndef __PHASE_H__
 #define __PHASE_H__
 
-#include "Engine.h"
+#include "EngineMinimal.h"
 
 #endif

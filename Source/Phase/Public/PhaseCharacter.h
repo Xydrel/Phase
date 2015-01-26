@@ -1,21 +1,22 @@
 // Copyright 1998-2014 Epic Games, Inc. All Rights Reserved.
 #pragma once
-
-#include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/Character.h"
 #include "PhaseCharacter.generated.h"
 
 UCLASS(config=Game)
 class APhaseCharacter : public ACharacter
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 
 	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	TSubobjectPtr<class USpringArmComponent> CameraBoom;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class USpringArmComponent* CameraBoom;
 
 	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	TSubobjectPtr<class UCameraComponent> FollowCamera;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* FollowCamera;
+public:
+	APhaseCharacter(const FObjectInitializer& ObjectInitializer);
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -25,30 +26,13 @@ class APhaseCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
-	/**  Base Flight rate, in deg/sec. */
-	UPROPERTY(VisibleAnywhere, Category = Camera)
-	float BaseFlyRate;
-
 protected:
 
-	////////////////////////////////////////////////////////////////////////////////////
-	// * Actions *
-	/** To Activate a power*/
-	void OnUsePower();
-
-	/**  To Fire a weapom */
-	void OnFire();
-
-	////////////////////////////////////////////////////////////////////////////////////
-	// * Movement *
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
 	/** Called for side to side input */
 	void MoveRight(float Value);
-
-	/** Called for flying movment input */
-	void MoveFly(float Rate);
 
 	/** 
 	 * Called via input to turn at a given rate. 
@@ -65,10 +49,18 @@ protected:
 	/** Handler for when a touch input begins. */
 	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
 
-protected:
+	/** Handler for when a touch input stops. */
+	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
+protected:
 	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) OVERRIDE;
+	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
+
+public:
+	/** Returns CameraBoom subobject **/
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	/** Returns FollowCamera subobject **/
+	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 };
 

@@ -6,11 +6,11 @@
 //////////////////////////////////////////////////////////////////////////
 // APhaseCharacter
 
-APhaseCharacter::APhaseCharacter(const class FPostConstructInitializeProperties& PCIP)
-	: Super(PCIP)
+APhaseCharacter::APhaseCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	// Set size for collision capsule
-	CapsuleComponent->InitCapsuleSize(42.f, 96.0f);
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
@@ -22,21 +22,21 @@ APhaseCharacter::APhaseCharacter(const class FPostConstructInitializeProperties&
 	bUseControllerRotationRoll = false;
 
 	// Configure character movement
-	CharacterMovement->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	CharacterMovement->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
-	CharacterMovement->JumpZVelocity = 600.f;
-	CharacterMovement->AirControl = 0.2f;
+	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
+	GetCharacterMovement()->JumpZVelocity = 600.f;
+	GetCharacterMovement()->AirControl = 0.2f;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
-	CameraBoom = PCIP.CreateDefaultSubobject<USpringArmComponent>(this, TEXT("CameraBoom"));
+	CameraBoom = ObjectInitializer.CreateDefaultSubobject<USpringArmComponent>(this, TEXT("CameraBoom"));
 	CameraBoom->AttachTo(RootComponent);
 	CameraBoom->TargetArmLength = 300.0f; // The camera follows at this distance behind the character	
-	CameraBoom->bUseControllerViewRotation = true; // Rotate the arm based on the controller
+	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
 	// Create a follow camera
-	FollowCamera = PCIP.CreateDefaultSubobject<UCameraComponent>(this, TEXT("FollowCamera"));
+	FollowCamera = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("FollowCamera"));
 	FollowCamera->AttachTo(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	FollowCamera->bUseControllerViewRotation = false; // Camera does not rotate relative to arm
+	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
@@ -50,7 +50,7 @@ void APhaseCharacter::SetupPlayerInputComponent(class UInputComponent* InputComp
 	// Set up gameplay key bindings
 	check(InputComponent);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	//InputComponent->BindAction("Fly", IE_Pressed, this, &ACharacter::ClientCheatFly);
+	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	InputComponent->BindAxis("MoveForward", this, &APhaseCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &APhaseCharacter::MoveRight);
@@ -64,7 +64,8 @@ void APhaseCharacter::SetupPlayerInputComponent(class UInputComponent* InputComp
 	InputComponent->BindAxis("LookUpRate", this, &APhaseCharacter::LookUpAtRate);
 
 	// handle touch devices
-	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &APhaseCharacter::TouchStarted);
+	InputComponent->BindTouch(IE_Pressed, this, &APhaseCharacter::TouchStarted);
+	InputComponent->BindTouch(IE_Released, this, &APhaseCharacter::TouchStopped);
 }
 
 
@@ -77,19 +78,11 @@ void APhaseCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Locati
 	}
 }
 
-void APhaseCharacter::MoveFly(float Rate)
+void APhaseCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
-	// implement flying feature
-	// Intend the PhaseCharacter to float in the direction the player is looking
-	if ((Controller != NULL) && (Rate != 0.0f))
+	if (FingerIndex == ETouchIndex::Touch1)
 	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-		// get forward vector
-		const FVector Direction = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Rate); // Using Rate currently, but needs investigation
+		StopJumping();
 	}
 }
 
@@ -114,7 +107,7 @@ void APhaseCharacter::MoveForward(float Value)
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		// get forward vector
-		const FVector Direction = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
 	}
 }
